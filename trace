@@ -1,0 +1,54 @@
+unzip -p 2018-11-13-raspbian-stretch.zip | sudo dd bs=4M of=/dev/sdX status=progress conv=fsync
+sudo dd bs=4M if=/dev/sdc of=verif.img count=445 status=progress
+diff -s verif.img  ~/Téléchargements/2018-11-13-raspbian-stretch-lite.img
+
+clavier ecran
+raspi-config
+extend fs
+local : local, keyboard, timezone
+hostname
+password
+interface : ssh, i2c
+
+ssh-keygen -f "/home/loic/.ssh/known_hosts" -R 192.168.1.25
+ssh -X pi@192.168.1.25
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-get install xterm python3 python3-dev idle3 pigpio python-pigpio python3-pigpio git virtualenv
+
+git config --global color.diff auto
+git config --global color.status auto
+git config --global color.branch auto
+git config --global user.name "pessonnier"
+git config --global user.email loic.pessonnier@gmail.com
+# mot de passe en mémoire pendant 100h
+git config --global credential.helper 'cache --timeout=360000'
+
+wget -q https://git.io/voEUQ -O /tmp/raspap
+sudo bash /tmp/raspap
+
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+sudo pip install virtualenv virtualenvwrapper
+
+echo -e "\n# virtualenv and virtualenvwrapper" >> ~/.profile
+echo "export WORKON_HOME=$HOME/.virtualenvs" >> ~/.profile
+echo "export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3" >> ~/.profile
+echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.profile
+. ~/.profile
+
+mkvirtualenv pied -p python3
+
+pip install pandas 
+
+sudo apt-get install i2c-tools python-smbus
+sudo i2cdetect -y 1
+
+git clone https://github.com/pessonnier/pied.git
+cd pied
+travail sur step.py
+git add step.py
+git commit -a
+git push
