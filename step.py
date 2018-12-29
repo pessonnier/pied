@@ -44,6 +44,15 @@ def step1(seq = step_seq, periode = periode):
             pi.write(pin, state)
         time.sleep(periode)
 
+def step2(seq = step_seq, periode = periode, plibre = 0):
+    for step in seq:
+        for pin, state in zip(outs, step):
+            pi.write(pin, state)
+        time.sleep(periode)
+        for pin in outs:
+            pi.write(pin, 0)
+        time.sleep(plibre)
+
 
 def stepn(n, step_fun=step1, seq = step_seq, periode = periode):
     for i in range(n):
@@ -51,4 +60,9 @@ def stepn(n, step_fun=step1, seq = step_seq, periode = periode):
     for pin in outs:
         pi.write(pin, 0)
 
-stepn(100, seq = step_seq, periode = 2/10000)
+
+import time
+start = time. time()
+stepn(1000, seq = step_seq, periode = 2/10000)
+end = time. time()
+print(end - start)
